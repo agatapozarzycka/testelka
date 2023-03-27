@@ -1,18 +1,21 @@
+package OldTests;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.BeforeAll;
-import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import static java.lang.Thread.*;
+
+import static java.lang.Thread.sleep;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -120,6 +123,7 @@ public class AddingToCart {
         WebElement buttonGoToWindsurfing = driver.findElement(By.xpath(".//h2[contains(text(), 'Windsurfing')]"));
         buttonGoToWindsurfing.click();
         By buttonAddToCart = By.xpath(".//a[contains(text(), 'Dodaj do koszyka')]");
+
         for (int i = 0; i < 5; i++) {
             driver.findElements(buttonAddToCart).get(i).click();
             Thread.sleep(2000);
@@ -138,7 +142,7 @@ public class AddingToCart {
         driver.findElements(buttonGoToCart).get(4).click();
 
         List<WebElement> myElements = driver.findElements(By.xpath(".//div[@class = 'quantity']"));
-        Assertions.assertEquals(10,myElements.size(), "the is less than 10 products");
+        Assertions.assertEquals(10, myElements.size(), "the is less than 10 products");
     }
 
 }

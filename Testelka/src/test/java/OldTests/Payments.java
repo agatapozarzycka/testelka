@@ -1,9 +1,14 @@
+package OldTests;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -11,7 +16,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 public class Payments {
     WebDriver driver;
@@ -61,6 +67,7 @@ public class Payments {
         String expectedCreditCardErrorMessage = "Numer karty jest niekompletny.";
         Assertions.assertEquals(expectedCreditCardErrorMessage, actualCreditCardErrorMessage, "Error message is not displayed or has not expected text.");
     }
+
     @Test  //użytkownik jest informowany o błędach w formularzu na stronie płatności poprzez odpowiednie komunikaty
     public void errorMessagesOnPaymentPageDataFormular() throws InterruptedException {
         Thread.sleep(3000);
@@ -81,18 +88,18 @@ public class Payments {
         String billingEmail = driver.findElement(By.xpath(".//li[@data-id = 'billing_email']")).getText();
 
         assertAll("testAssertions",
-                () ->assertEquals("Imię płatnika jest wymaganym polem.", billingFistName),
-                () ->assertEquals("Nazwisko płatnika jest wymaganym polem.", billingLastName),
-                () ->assertEquals("Ulica płatnika jest wymaganym polem.", billingAddress1),
-                () ->assertEquals("Kod pocztowy płatnika nie jest prawidłowym kodem pocztowym.", billingPostcode),
-                () ->assertEquals("Miasto płatnika jest wymaganym polem.", billingCity),
-                () ->assertEquals("Telefon płatnika jest wymaganym polem.", billingPhone),
-                () ->assertEquals("Adres email płatnika jest wymaganym polem.", billingEmail)
+                () -> assertEquals("Imię płatnika jest wymaganym polem.", billingFistName),
+                () -> assertEquals("Nazwisko płatnika jest wymaganym polem.", billingLastName),
+                () -> assertEquals("Ulica płatnika jest wymaganym polem.", billingAddress1),
+                () -> assertEquals("Kod pocztowy płatnika nie jest prawidłowym kodem pocztowym.", billingPostcode),
+                () -> assertEquals("Miasto płatnika jest wymaganym polem.", billingCity),
+                () -> assertEquals("Telefon płatnika jest wymaganym polem.", billingPhone),
+                () -> assertEquals("Adres email płatnika jest wymaganym polem.", billingEmail)
         );
     }
 
     @Test //użytkownik ma możliwość zalogowania się na stronie płatności i dokonać płatności jako zalogowany użytkownik,
-    public void logedInUserPaysForProduct(){
+    public void logedInUserPaysForProduct() {
         By userLogInButton = By.xpath(".//a[@class = 'showlogin']");
         driver.findElement(userLogInButton).click();
 
@@ -109,6 +116,7 @@ public class Payments {
         acceptTermsAndClickBuyAndPayButton();
         assertionForSuccessfulOrderTitle();
     }
+
     @Test //użytkownik ma możliwość założenia konta na stronie płatności i dokonać jednocześnie płatności
 
     public void userCreatesAccountOnPaymentPage() {
@@ -121,19 +129,20 @@ public class Payments {
         wait.until(ExpectedConditions.titleContains("Moje konto – FakeStore"));
 
         String actualMessage = driver.findElement(By.xpath(".//div[@class ='woocommerce-MyAccount-content']/p")).getText();
-        Assertions.assertTrue(actualMessage.toString().contains(firstNameInput + " " + lastNameInput),
+        Assertions.assertTrue(actualMessage.contains(firstNameInput + " " + lastNameInput),
                 "My Account page does not contain correct name. Expected name: " + firstNameInput + " " + lastNameInput + " was not found in a string: " + actualMessage);
 
         deleteExistingAccount();
     }
 
     @Test // użytkownik ma możliwość dokonania zakupu bez zakładania konta
-    public void userBuysProductWithoutCreatingAnAccount(){
+    public void userBuysProductWithoutCreatingAnAccount() {
         completeForm();
         completeCreditCardDetails();
         acceptTermsAndClickBuyAndPayButton();
         assertionForSuccessfulOrderTitle();
     }
+
     @Test //użytkownik, który posiada konto może zobaczyć swoje zamówienia na swoim koncie
     public void userCanViewTheOrderFromTheAccount() {
         completeForm();
@@ -152,13 +161,13 @@ public class Payments {
 
         String actualOrderDetailsTitle = driver.findElement(By.xpath(".//h2[contains(@class, 'title')]")).getText();
         String expectedOrderDetailsTitle = "Szczegóły zamówienia";
-        WebElement productName =  driver.findElement(By.xpath(".//td[contains(@class, 'product-name')]"));
-        WebElement priceAmount =  driver.findElement(By.xpath(".//tr//span[contains(@class, 'amount')]/bdi"));
+        WebElement productName = driver.findElement(By.xpath(".//td[contains(@class, 'product-name')]"));
+        WebElement priceAmount = driver.findElement(By.xpath(".//tr//span[contains(@class, 'amount')]/bdi"));
 
         assertAll("testAssertions",
-                () ->assertEquals(expectedOrderDetailsTitle, actualOrderDetailsTitle),
-                () ->assertTrue(productName.isDisplayed()),
-                () ->assertTrue(priceAmount.isDisplayed())
+                () -> assertEquals(expectedOrderDetailsTitle, actualOrderDetailsTitle),
+                () -> assertTrue(productName.isDisplayed()),
+                () -> assertTrue(priceAmount.isDisplayed())
         );
 
         driver.findElement(myAccountMenuItem).click();
@@ -167,8 +176,9 @@ public class Payments {
 
     }
 
-    @Test//użytkownik po dokonaniu zamówienia może zobaczyć podsumowanie, które zawiera numer zamówienia, poprawną datę, kwotę, metodę płatności, nazwę i ilość zakupionych produktów.
-    public void userCanViewOrderDetailsAfterCompletedTheOrder(){
+    @Test
+//użytkownik po dokonaniu zamówienia może zobaczyć podsumowanie, które zawiera numer zamówienia, poprawną datę, kwotę, metodę płatności, nazwę i ilość zakupionych produktów.
+    public void userCanViewOrderDetailsAfterCompletedTheOrder() {
         completeForm();
         completeCreditCardDetails();
         acceptTermsAndClickBuyAndPayButton();
@@ -182,17 +192,17 @@ public class Payments {
         WebElement orderProductQuantity = driver.findElement(By.xpath(".//strong[contains(@class, 'product-quantity')]"));
 
         assertAll("productDetailsTest",
-                ()->assertTrue(orderNumber.isDisplayed(),"Order number is not displayed"),
-                ()->assertTrue(orderDate.isDisplayed(),"Order date is not displayed"),
-                ()->assertTrue(orderTotalAmount.isDisplayed(), "Order total amount is not displayed"),
-                ()->assertTrue(orderPaymentMethod.isDisplayed(), "Order payment method is not displayed"),
-                ()->assertTrue(orderProductName.isDisplayed(),"Order product name is not displayed"),
-                ()->assertTrue(orderProductQuantity.isDisplayed(),"Order product quantity is not displayed")
-                );
+                () -> assertTrue(orderNumber.isDisplayed(), "Order number is not displayed"),
+                () -> assertTrue(orderDate.isDisplayed(), "Order date is not displayed"),
+                () -> assertTrue(orderTotalAmount.isDisplayed(), "Order total amount is not displayed"),
+                () -> assertTrue(orderPaymentMethod.isDisplayed(), "Order payment method is not displayed"),
+                () -> assertTrue(orderProductName.isDisplayed(), "Order product name is not displayed"),
+                () -> assertTrue(orderProductQuantity.isDisplayed(), "Order product quantity is not displayed")
+        );
     }
 
 
-    void completeForm(){
+    void completeForm() {
 
 
         By firstNameField = By.xpath(".//input[@id= 'billing_first_name']");
@@ -218,7 +228,7 @@ public class Payments {
         driver.findElement(billingEmailField).sendKeys(billingEmailInput);
     }
 
-    void completeCreditCardDetails(){
+    void completeCreditCardDetails() {
         driver.switchTo().frame(driver.findElement(By.xpath(".//div[@id = 'stripe-card-element']//iframe")));
         By cardNumberField = By.xpath(".//input[@name = 'cardnumber']");
         driver.findElement(cardNumberField).click();
@@ -241,7 +251,7 @@ public class Payments {
         driver.switchTo().defaultContent();
     }
 
-    void acceptTermsAndClickBuyAndPayButton(){
+    void acceptTermsAndClickBuyAndPayButton() {
         By termsCheckBox = By.xpath(".//input[@id = 'terms']");
         driver.findElement(termsCheckBox).click();
 
@@ -263,9 +273,10 @@ public class Payments {
 
         String actualErrorMessage = driver.findElement(By.xpath(".//ul[@class = 'woocommerce-error']/li")).getText();
         String expectedErrorMessage = "Nieznany adres e-mail. Proszę sprawdzić ponownie lub wypróbować swoją nazwę użytkownika.";
-        Assertions.assertEquals(expectedErrorMessage,actualErrorMessage,"Account was not deleted");}
+        Assertions.assertEquals(expectedErrorMessage, actualErrorMessage, "Account was not deleted");
+    }
 
-    void createAnAccountOnPaymentPage(){
+    void createAnAccountOnPaymentPage() {
         By createAccountCheckbox = By.xpath(".//input[@id ='createaccount']");
         driver.findElement(createAccountCheckbox).click();
 
@@ -274,9 +285,9 @@ public class Payments {
         driver.findElement(enterAccountPasswordField).sendKeys(testPassword);
     }
 
-    void assertionForSuccessfulOrderTitle(){
+    void assertionForSuccessfulOrderTitle() {
         String orderReceivedMessage = driver.findElement(By.xpath(".//header[@class = 'entry-header']")).getText();
-        Assertions.assertEquals("Zamówienie otrzymane",orderReceivedMessage);
+        Assertions.assertEquals("Zamówienie otrzymane", orderReceivedMessage);
     }
 }
 

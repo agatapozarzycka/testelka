@@ -1,3 +1,5 @@
+package OldTests;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -12,13 +14,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class EditingCart {
     WebDriver driver;
     WebDriverWait wait;
+
     @BeforeEach
-    public void testsStart(){
+    public void testsStart() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.navigate().to("https://fakestore.testelka.pl/");
@@ -33,8 +34,9 @@ public class EditingCart {
         By goToCart = By.xpath(".//div/a[@class='button wc-forward']");
         driver.findElement(goToCart).click();
     }
+
     @AfterEach
-    public void driverQuit(){
+    public void driverQuit() {
         driver.quit();
     }
 
@@ -55,8 +57,9 @@ public class EditingCart {
         wait.until(ExpectedConditions.visibilityOf(cartActualAlert));
         Assertions.assertTrue(cartActualAlert.isDisplayed(), "Message is not displayed. Cart was probably not edited");
     }
+
     @Test //użytkownik ma możliwość usunięcia wycieczki na stronie koszyka (całej pozycji)
-    public void deleteProductFromCart(){
+    public void deleteProductFromCart() {
         By deleteButton = By.xpath(".//a[@class = 'remove']");
         driver.findElement(deleteButton).click();
         WebElement spinner = driver.findElement(By.xpath(".//div[@class ='blockUI blockOverlay']"));
